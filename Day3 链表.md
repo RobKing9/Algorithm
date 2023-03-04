@@ -138,6 +138,7 @@ private:
 class Solution {
 public:
     ListNode* reverseList(ListNode* head) {
+        // 之所以为空，是因为第一个指向的是空
         ListNode * pre = nullptr;
         ListNode * next = nullptr;
         while(head) {
@@ -154,3 +155,119 @@ public:
 ```
 
 理解：循环结束的条件是头结点不为空。
+
+## [19. 删除链表的倒数第 N 个结点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)
+
+给你一个链表，删除链表的倒数第 `n` 个结点，并且返回链表的头结点。
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        // 链表长度
+        int len = 0;
+        ListNode * cur = head;
+        while(cur) {
+            cur = cur->next;
+            len ++;
+        }
+        ListNode * dummy = new ListNode(0);
+        dummy->next = head;
+        cur = dummy;
+        int idx = len - n;
+        while(idx --) {
+            cur = cur->next;
+        }
+        cur->next = cur->next->next;
+
+        return dummy->next;
+
+    }
+};
+```
+
+快慢指针方法
+
+简单来说就是两个指针共同走完整条链表	
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        ListNode * dummy = new ListNode(0);
+        dummy->next = head;
+        // 快慢指针
+        ListNode * slow = dummy;
+        ListNode * fast = dummy;
+
+        // 先移动 n + 1 步，这样快指针移动结尾的时候，慢指针刚好移动到需要删除的结点的前面
+        int step = n + 1;
+        while(step --) fast = fast->next;
+
+        while(fast) {
+            fast = fast->next;
+            slow = slow->next;
+        }
+
+        slow->next = slow->next->next;
+
+        return dummy->next;
+
+    }
+};
+```
+
+## [面试题 02.07. 链表相交](https://leetcode.cn/problems/intersection-of-two-linked-lists-lcci/)
+
+给你两个单链表的头节点 `headA` 和 `headB` ，请你找出并返回两个单链表相交的起始节点。如果两个链表没有交点，返回 `null` 。
+
+```cpp
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+        if(headB == nullptr || headA == nullptr) return nullptr;
+        ListNode * curA = headA;
+        ListNode * curB = headB;
+
+        while(curA != curB) {
+            if(curA) curA = curA->next;
+            else curA = headB;
+
+            if(curB) curB = curB->next;
+            else curB = headA;
+        }
+
+        return curA;
+    }
+};
+```
+
+理解：注意循环结束条件即可，如果不想交，那么也会同时走向空节点会退出循环返回null
