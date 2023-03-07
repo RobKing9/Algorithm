@@ -118,7 +118,7 @@ public:
                 return vector<int>{i, res[target - nums[i]]};
             }
             res[nums[i]] = i;
-             //  auto iter = map.find(target - nums[i]); 
+             //  auto iter = map.find(target - nums[i]); 	
             // if(iter != map.end()) {
             //     return {iter->second, i};
             // }
