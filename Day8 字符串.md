@@ -83,30 +83,36 @@ public:
 ```cpp
 class Solution {
 public:
-    void removeSpace(string& s) {
+    // 思路：先去掉空格，留下单词之间的空格，然后翻转每个单词，最后整体翻转
+    void removeSpace(string &s) {
         int j = 0;
-        for(int i = 0; i < s.size(); i ++) {
+        for(int i = 0; i < s.size(); i ++ ) {
+            // 不为空格的时候
             if(s[i] != ' ') {
-                if(j != 0) s[j ++] = ' ';   // 手动加上空格
+                // 手动加单词间的空格
+                if(j > 0) s[j ++] = ' ';
+                // 添加单词
                 while(i < s.size() && s[i] != ' ') {
-                    s[j ++] = s[i ++];  // 类似于移除数组的元素一样，往前移动
+                    s[j ++] = s[i ++];  // 通过移动覆盖的方式 添加到原串
                 }
             }
         }
+        // 重置大小
         s.resize(j);
     }
-    void reverse(string& s, int st, int ed) {
-        for(int i = st, j = ed; i < j; i ++, j --) swap(s[i], s[j]);
+    void reverse(string & s, int st, int ed) {
+        for(int i = st, j = ed; i < j; i ++, j --) swap(s[i], s[j - 1]);
     }
     string reverseWords(string s) {
-        // 去除多余的空格
         removeSpace(s);
-        for(int i = 0; i < s.size(); i ++ ) {
-            int j = i;  // 保存开始的位置
+        // 翻转每个单词
+        for(int i = 0; i < s.size(); i ++) {
+            int j = i;  // 记录单词的初始位置
             while(i < s.size() && s[i] != ' ') i ++;
-            reverse(s, j, i - 1);
+            reverse(s, j, i);
         }
-        reverse(s, 0, s.size() - 1);
+        // 整体翻转
+        reverse(s, 0, s.size());
         return s;
     }
 };
