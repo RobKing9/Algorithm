@@ -1,0 +1,106 @@
+# Day15
+
+
+
+## [102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/description/)
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        // 思路：使用队列，一层一层的加入
+        if(root == nullptr) return {};
+        vector<vector<int>> res;
+        queue<TreeNode *> qu;
+        qu.push(root);
+        while(!qu.empty()) {
+            // 接受每一层的结点
+            vector<int> level;
+            int size = qu.size();
+            // 这里的循环条件是队列长度，表示这一层的节点个数
+            while(size --) {
+                auto tmp = qu.front();
+                qu.pop();
+                level.push_back(tmp->val);
+                if(tmp->left) qu.push(tmp->left);
+                if(tmp->right) qu.push(tmp->right);
+            }
+            res.push_back(level);
+        }
+        return res;
+    }
+};
+```
+
+## [226. 翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/description/)
+
+给你一棵二叉树的根节点 `root` ，翻转这棵二叉树，并返回其根节点。
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if(root == nullptr) return nullptr;
+        swap(root->left, root->right);
+        invertTree(root->left);
+        invertTree(root->right);
+        return root;
+    }
+};
+```
+
+## [101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/description/)
+
+给你一个二叉树的根节点 `root` ， 检查它是否轴对称。
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        // 特殊情况
+        if(root == nullptr) return root;
+        return isSym(root->left, root->right);
+    }
+    bool isSym(TreeNode* left, TreeNode * right) {
+        // 递归结束的条件
+        if(left == nullptr && right == nullptr) return true;
+        if(left == nullptr || right == nullptr) return false;
+        if(left->val != right->val) return false;
+        return isSym(left->left, right->right) && isSym(left->right, right->left);
+    }
+};
+```
+
