@@ -158,6 +158,34 @@ class Solution {
 public:
     bool isValidBST(TreeNode* root) {
         if(root == nullptr) return true;
+        return helper(root, LONG_MIN, LONG_MAX);
+    }
+    bool helper(TreeNode* root, long int left, long int right) {
+        if(root == nullptr) return true;
+        if(root->val <= left || root->val >= right) return false;
+        return helper(root->left, left, root->val) && helper(root->right, root->val, right);
+    }
+};
+```
+
+
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    bool isValidBST(TreeNode* root) {
+        if(root == nullptr) return true;
         vector<int> nums;
         helper(root, nums);
         for(int i = 1; i < nums.size(); i ++ ) if(nums[i] <= nums[i - 1]) return false;
