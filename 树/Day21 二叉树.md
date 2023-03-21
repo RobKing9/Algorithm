@@ -29,9 +29,8 @@
 class Solution {
 public:
     // 初始值 res 尽可能大，因为求的是最小值
-    // 初始化 pre 代表根节点前一个 节点的值，因为一开始pre没有值
     // 需要赋值一个 较小的值，这样第一次减的时候会特别大而不影响结果
-    int res = 10e5, pre = -10e5;
+    int res = 10e5, pre = -1;
     int getMinimumDifference(TreeNode* root) {
          getMin(root);
          return res;
@@ -40,12 +39,49 @@ public:
         if(root == nullptr) return ;
         getMin(root->left);
         // 处理
-        res = min(res, root->val - pre);
+        if(pre != -1) res = min(res, root->val - pre);
         pre = root->val;
         getMin(root->right); 
     }
 };
 ```
+
+以节点 保存 节点
+
+**在二叉树中通过两个前后指针作比较**
+
+```cpp
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int res = 10e5;
+    TreeNode* pre = nullptr;
+    int getMinimumDifference(TreeNode* root) {
+         getMin(root);
+         return res;
+    }
+    void getMin(TreeNode* root) {
+        if(root == nullptr) return ;
+        getMin(root->left);
+        // 处理
+        if(pre != nullptr) res = min(res, root->val - pre->val);
+        pre = root;
+        getMin(root->right); 
+    }
+};
+```
+
+
 
 ## [501. 二叉搜索树中的众数](https://leetcode.cn/problems/find-mode-in-binary-search-tree/)
 
@@ -107,6 +143,8 @@ public:
 };
 ```
 
+频率count 大于 maxCount的时候，不仅要更新maxCount，而且要清空结果集（以下代码为result数组），因为结果集之前的元素都失效了。
+
 
 
 ## [236. 二叉树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/description/)
@@ -127,18 +165,36 @@ public:
  */
 class Solution {
 public:
+    // 条件是 两个不相等，并且整棵树 所有结点的值 都不相等
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        // 使用后序遍历，先遍历左右两边，然后中间处理
+        // 如果遇到了 p或者q 直接返回 p或者q 否则就是返回空
+        // 处理的过程就是 看左右返回的值 
+        // 如果都不为空的话，那么左右都找到了，返回root 其实就是他们的祖先
+        // 如果只有一边不为空的话 说明只有这一边找到了，返回这一边，然后继续去左右遍历
+
+        // 另外如果两个互为 最近祖先的话，将最上面那个返回，下面就不需要遍历了
+        // 因为最终返回的只有一边，刚好符合条件
+        
         if(root == nullptr) return nullptr;
-        // 匹配
-        if(p == root || q == root) return root;
-        TreeNode * left =  lowestCommonAncestor(root->left, p, q);
-        TreeNode * right = lowestCommonAncestor(root->right, p, q);
-        // 同时在两边找到  说明根就是最近
+        // 如果遇到了 p或者q 直接返回 p或者q 
+        if(root == p || root == q) return root;
+        TreeNode* left = lowestCommonAncestor(root->left, p, q);
+        TreeNode* right = lowestCommonAncestor(root->right, p, q);
+        // 都不为空  如果是在最下面找到的 依然会一步一步返回上去
         if(left && right) return root;
-        if(left) return left;
+        if(left) return left;   // 左不为空 返回左
         if(right) return right;
+        // 都没找到 不满足条件
         return nullptr;
     }
 };
 ```
 
+这道题目的看代码比较简单，而且好像也挺好理解的，但是如果把每一个细节理解到位，还是不容易的。
+
+主要思考如下几点：
+
+- 如何从底向上遍历？
+- 遍历整棵树，还是遍历局部树？
+- 如何把结果传到根节点的？
