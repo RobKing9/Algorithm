@@ -96,6 +96,8 @@ public:
             // 剪枝
             if(target <= 0) {
                 tmp.pop_back();
+                // 记得也要回溯!!!!!!
+                used[i] = 0;
                 break;
             }
             backtrack(candidates, target - candidates[i], used, res, tmp, i + 1);
@@ -156,7 +158,7 @@ public:
 class Solution {
 public:
     bool helper(string s, int st, int ed) {
-        for(int i = st, j = ed; i < j; i ++, j --) {
+        for(int i = st, j = ed; i <= j; i ++, j --) {
             if(s[i] != s[j]) return false;
         }
         return true;
@@ -188,4 +190,6 @@ public:
     }
 };
 ```
+
+
 
