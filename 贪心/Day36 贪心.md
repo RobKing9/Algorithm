@@ -19,7 +19,7 @@ public:
         string tmp = to_string(n);
         int start = tmp.size(); // start及之后都要变成9
         // 从后遍历
-        for(int i = tmp.size() - 1; i > 0; i --) {
+        for(int i = tmp.size() - 1; i > 0; i --) {	
             // 如果不是递增了，那么 需要改变 前一个变小，之后的全变成9
             if(tmp[i-1] > tmp[i]) {
                 start = i;
